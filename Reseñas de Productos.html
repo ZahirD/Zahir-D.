@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reseñas de Productos</title>
+  <style>
+   body {
+    font-family: Arial, sans-serif;
+   }
+   .container {
+    width: 80%;
+    margin: auto;
+   }
+   .review {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+   }
+   .hidden {
+    display: none;
+   }
+  </style>
+ </head>
+ <body>
+  <div class="container">
+   <h1>Reseñas de Productos</h1>
+   <div id="reviews"></div>
+   <h2>Añadir una reseña</h2>
+   <form id="reviewForm">
+    <input
+     type="text"
+     id="productName"
+     placeholder="Nombre del producto"
+     required
+    />
+    <br /><br />
+    <textarea
+     id="productReview"
+     placeholder="Escribe tu reseña aquí"
+     required
+    ></textarea>
+    <br /><br />
+    <button type="submit">Enviar Reseña</button>
+   </form>
+  </div>
+
+  <script>
+   // Verificar si hay reseñas guardadas en localStorage
+   function loadReviews() {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || []
+    const reviewsContainer = document.getElementById('reviews')
+    reviewsContainer.innerHTML = '' // Limpiar el contenedor de reseñas
+    reviews.forEach((review, index) => {
+     const reviewElement = document.createElement('div')
+     reviewElement.classList.add('review')
+     reviewElement.innerHTML = `
+      <strong>${review.name}</strong>
+      <p>${review.content}</p>
+      <button onclick="deleteReview(${index})">Eliminar</button>
+    `
+     reviewsContainer.appendChild(reviewElement)
+    })
+   }
+
+   // Añadir una nueva reseña
+   document
+    .getElementById('reviewForm')
+    .addEventListener('submit', function (event) {
+     event.preventDefault()
+     const productName = document.getElementById('productName').value
+     const productReview = document.getElementById('productReview').value
+     const reviews = JSON.parse(localStorage.getItem('reviews')) || []
+     reviews.push({ name: productName, content: productReview })
+     localStorage.setItem('reviews', JSON.stringify(reviews))
+     loadReviews()
+     this.reset() // Resetear el formulario
+    })
+
+   // Eliminar una reseña
+   function deleteReview(index) {
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || []
+    reviews.splice(index, 1)
+    localStorage.setItem('reviews', JSON.stringify(reviews))
+    loadReviews()
+   }
+
+   // Cargar reseñas al cargar la página
+   loadReviews()
+  </script>
+ </body>
+</html>
